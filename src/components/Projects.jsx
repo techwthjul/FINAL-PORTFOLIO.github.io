@@ -1,7 +1,18 @@
+import { useState } from "react";
 import { PROJECTS } from "../constants";
 import { motion } from "framer-motion";
 
 const Projects = () => {
+  // State to store the selected category
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
+
+  // Filter projects based on the selected category
+  const filteredProjects = PROJECTS.filter((project) =>
+    selectedCategory === "ALL"
+      ? true
+      : project.technologies.includes(selectedCategory)
+  );
+
   return (
     <div className="border-b border-neutral-900 pb-4">
       <motion.h2
@@ -12,8 +23,27 @@ const Projects = () => {
       >
         Projects
       </motion.h2>
+
+      {/* Category Filter Buttons */}
+      <div className="flex justify-center mb-8">
+        {["ALL", "POWER BI", "EXCEL", "SQL", "R", "PYTHON"].map((category) => (
+          <button
+            key={category}
+            className={`mr-4 px-4 py-2 rounded-full ${
+              selectedCategory === category
+                ? "bg-purple-900 text-white"
+                : "bg-neutral-200 text-neutral-900"
+            }`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
+      {/* Project Listing */}
       <div>
-        {PROJECTS.map((project, index) => (
+        {filteredProjects.map((project, index) => (
           <div key={index} className="mb-8 flex flex-wrap lg:justify-center">
             <motion.div
               whileInView={{ opacity: 1, x: 0 }}
@@ -46,7 +76,7 @@ const Projects = () => {
                     {tech}
                   </span>
                 ))}
-                <a href={project.link} className="text-blue-500 underline">
+                <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
                   View Project
                 </a>
               </div>
